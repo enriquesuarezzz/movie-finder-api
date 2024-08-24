@@ -16,18 +16,22 @@ This is a RESTful API built with Node.js and Express for managing a movie databa
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/yourusername/movie-finder-api.git
-    ```
+```bash
+git clone https://github.com/yourusername/movie-finder-api.git
+  ```
+
 2. Navigate to the project directory:
+   
  ```bash
    cd movie-finder-api
-   Install the dependencies:
  ```
+
 3. Navigate to the project directory:
+   
  ```bash
    npm install
  ```
+
 ## Environment Variables
 
 Create a .env file in the root of your project and add the following environment variables:
