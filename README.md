@@ -54,7 +54,7 @@ To start the server, run:
 By default, the server will run on http://localhost:5000.
 
 
-API Endpoints
+## API Endpoints
 Here are the main endpoints provided by the API:
 
     Movies
