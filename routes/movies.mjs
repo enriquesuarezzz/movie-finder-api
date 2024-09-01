@@ -73,7 +73,7 @@ router.put("/:id", async (req, res) => {
     const [result] = await pool.query(
       `
       UPDATE movies 
-      SET title = ?, release_date = ?, genre_id = ?, director_id = ? 
+      SET title = ?, release_date = ?, genre_id = ?, director_id = ?, poster_url = ?, description = ? 
       WHERE id = ?`,
       [title, release_date, genre_id, director_id, id]
     );
