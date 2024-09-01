@@ -49,8 +49,8 @@ router.post("/", async (req, res) => {
   try {
     const [result] = await pool.query(
       `
-      INSERT INTO movies (title, release_date, genre_id, director_id) 
-      VALUES (?, ?, ?, ?)`,
+      INSERT INTO movies (title, release_date, genre_id, director_id, poster_url, description) 
+      VALUES (?, ?, ?, ?, ?, ?)`,
       [title, release_date, genre_id, director_id]
     );
     res.status(201).json({
