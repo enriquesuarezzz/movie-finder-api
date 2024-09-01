@@ -44,14 +44,21 @@ router.get("/:id", async (req, res) => {
 
 // Create a new movie
 router.post("/", async (req, res) => {
-  const { title, release_date, genre_id, director_id } = req.body;
+  const {
+    title,
+    release_date,
+    genre_id,
+    director_id,
+    porter_url,
+    description,
+  } = req.body;
 
   try {
     const [result] = await pool.query(
       `
       INSERT INTO movies (title, release_date, genre_id, director_id, poster_url, description) 
       VALUES (?, ?, ?, ?, ?, ?)`,
-      [title, release_date, genre_id, director_id]
+      [title, release_date, genre_id, director_id, porter_url, description]
     );
     res.status(201).json({
       id: result.insertId,
@@ -59,6 +66,8 @@ router.post("/", async (req, res) => {
       release_date,
       genre_id,
       director_id,
+      poster_url,
+      description,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -68,14 +77,21 @@ router.post("/", async (req, res) => {
 // Update a movie by id
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, release_date, genre_id, director_id } = req.body;
+  const {
+    title,
+    release_date,
+    genre_id,
+    director_id,
+    poster_url,
+    description,
+  } = req.body;
   try {
     const [result] = await pool.query(
       `
       UPDATE movies 
       SET title = ?, release_date = ?, genre_id = ?, director_id = ?, poster_url = ?, description = ? 
       WHERE id = ?`,
-      [title, release_date, genre_id, director_id, id]
+      [title, release_date, genre_id, director_id, poster_url, description, id]
     );
 
     if (result.affectedRows === 0) {
