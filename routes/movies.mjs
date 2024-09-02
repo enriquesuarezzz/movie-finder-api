@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
     release_date,
     genre_id,
     director_id,
-    porter_url,
+    poster_url,
     description,
   } = req.body;
 
@@ -58,7 +58,7 @@ router.post("/", async (req, res) => {
       `
       INSERT INTO movies (title, release_date, genre_id, director_id, poster_url, description) 
       VALUES (?, ?, ?, ?, ?, ?)`,
-      [title, release_date, genre_id, director_id, porter_url, description]
+      [title, release_date, genre_id, director_id, poster_url, description]
     );
     res.status(201).json({
       id: result.insertId,
