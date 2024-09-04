@@ -12,8 +12,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.disable("x-powered-by");
-app.use("/api", moviesRouter); // Mount the router at /api
 
+// Mount routers
 app.use("/api/genres", genresRoutes);
 app.use("/api/directors", directorsRouter);
 app.use("/api/movies", moviesRouter);
