@@ -121,4 +121,20 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// Search movies by title
+router.get("/search", async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    const [movies] = await pool.query(
+      "SELECT * FROM movies WHERE title LIKE ?",
+      [`%${query}%`]
+    );
+
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;
