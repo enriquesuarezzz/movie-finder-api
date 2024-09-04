@@ -3,6 +3,29 @@ import pool from "../db.mjs";
 
 const router = Router();
 
+router.get("/search", async (req, res) => {
+  const query = req.query.query;
+
+  if (!query) {
+    return res.status(400).json({ message: "Query parameter is required" });
+  }
+
+  try {
+    const [movies] = await pool.query(
+      "SELECT * FROM movies WHERE title LIKE ?",
+      [`%${query}%`]
+    );
+
+    if (movies.length === 0) {
+      return res.status(404).json({ message: "No movies found" });
+    }
+
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get all movies
 router.get("/", async (req, res) => {
   try {
