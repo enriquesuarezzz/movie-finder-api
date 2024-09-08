@@ -3,6 +3,16 @@ import pool from "../db.mjs";
 
 const router = Router();
 
+// Validate director ID
+const validateDirectorId = (id) => {
+  return Number.isInteger(parseInt(id, 10)) && parseInt(id, 10) > 0;
+};
+
+// Validate director name
+const validateDirectorName = (name) => {
+  return typeof name === "string" && name.trim() !== "";
+};
+
 // Get all directors
 router.get("/", async (req, res) => {
   try {
@@ -16,6 +26,10 @@ router.get("/", async (req, res) => {
 // Get a director by id
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
+
+  if (!validateDirectorId(id)) {
+    return res.status(400).json({ message: "Invalid director ID" });
+  }
 
   try {
     const [director] = await pool.query(
@@ -35,6 +49,10 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const { name } = req.body;
 
+  if (!validateDirectorName(name)) {
+    return res.status(400).json({ message: "Invalid director name" });
+  }
+
   try {
     const [result] = await pool.query(
       "INSERT INTO directors (name) VALUES (?)",
@@ -50,6 +68,14 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
+
+  if (!validateDirectorId(id)) {
+    return res.status(400).json({ message: "Invalid director ID" });
+  }
+
+  if (!validateDirectorName(name)) {
+    return res.status(400).json({ message: "Invalid director name" });
+  }
 
   try {
     const [result] = await pool.query(
@@ -70,6 +96,10 @@ router.put("/:id", async (req, res) => {
 // Delete a director by id
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
+
+  if (!validateDirectorId(id)) {
+    return res.status(400).json({ message: "Invalid director ID" });
+  }
 
   try {
     const [result] = await pool.query("DELETE FROM directors WHERE id = ?", [
