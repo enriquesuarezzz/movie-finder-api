@@ -3,6 +3,16 @@ import pool from "../db.mjs";
 
 const router = Router();
 
+// Validate genre ID
+const validateGenreId = (id) => {
+  return Number.isInteger(parseInt(id, 10)) && parseInt(id, 10) > 0;
+};
+
+// Validate genre name
+const validateGenreName = (name) => {
+  return typeof name === "string" && name.trim() !== "";
+};
+
 // Get all genres
 router.get("/", async (req, res) => {
   try {
@@ -16,6 +26,10 @@ router.get("/", async (req, res) => {
 // Get a genre by id
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
+
+  if (!validateGenreId(id)) {
+    return res.status(400).json({ message: "Invalid genre ID" });
+  }
 
   try {
     const [genre] = await pool.query("SELECT * FROM genres WHERE id = ?", [id]);
@@ -32,6 +46,10 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const { name } = req.body;
 
+  if (!validateGenreName(name)) {
+    return res.status(400).json({ message: "Invalid genre name" });
+  }
+
   try {
     const [result] = await pool.query("INSERT INTO genres (name) VALUES (?)", [
       name,
@@ -46,6 +64,14 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
+
+  if (!validateGenreId(id)) {
+    return res.status(400).json({ message: "Invalid genre ID" });
+  }
+
+  if (!validateGenreName(name)) {
+    return res.status(400).json({ message: "Invalid genre name" });
+  }
 
   try {
     const [result] = await pool.query(
@@ -66,6 +92,10 @@ router.put("/:id", async (req, res) => {
 // Delete a genre by id
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
+
+  if (!validateGenreId(id)) {
+    return res.status(400).json({ message: "Invalid genre ID" });
+  }
 
   try {
     const [result] = await pool.query("DELETE FROM genres WHERE id = ?", [id]);
