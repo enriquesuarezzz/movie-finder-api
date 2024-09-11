@@ -1,56 +1,19 @@
 import { Router } from "express";
 import pool from "../db.mjs";
-import { isValidDate, isValidURL, isPositiveNumber } from "../validators.mjs";
 
 const router = Router();
 
-// Function to validate movie fields
-const validateMovie = (movie) => {
-  const {
-    title,
-    release_date,
-    genre_id,
-    director_id,
-    poster_url,
-    description,
-  } = movie;
-
-  if (typeof title !== "string" || title.trim() === "") {
-    return "Title is required and must be a non-empty string";
-  }
-
-  if (!isValidDate(release_date)) {
-    return "Release date must be in the format YYYY-MM-DD";
-  }
-
-  if (!isPositiveNumber(genre_id)) {
-    return "Genre ID must be a positive number";
-  }
-
-  if (!isPositiveNumber(director_id)) {
-    return "Director ID must be a positive number";
-  }
-
-  if (!isValidURL(poster_url)) {
-    return "Poster URL must be a valid URL";
-  }
-
-  return null; // No validation errors
-};
-// Search movies by title
 router.get("/search", async (req, res) => {
   const query = req.query.query;
 
-  if (typeof query !== "string" || query.trim() === "") {
-    return res
-      .status(400)
-      .json({ message: "Valid query parameter is required" });
+  if (!query) {
+    return res.status(400).json({ message: "Query parameter is required" });
   }
 
   try {
     const [movies] = await pool.query(
       "SELECT * FROM movies WHERE title LIKE ?",
-      [`%${query.trim()}%`]
+      [`%${query}%`]
     );
 
     if (movies.length === 0) {
@@ -62,6 +25,7 @@ router.get("/search", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 // Get all movies
 router.get("/", async (req, res) => {
   try {
@@ -103,13 +67,6 @@ router.get("/:id", async (req, res) => {
 
 // Create a new movie
 router.post("/", async (req, res) => {
-  const movie = req.body;
-  const validationError = validateMovie(movie);
-
-  if (validationError) {
-    return res.status(400).json({ message: validationError });
-  }
-
   const {
     title,
     release_date,
@@ -117,7 +74,7 @@ router.post("/", async (req, res) => {
     director_id,
     poster_url,
     description,
-  } = movie;
+  } = req.body;
 
   try {
     const [result] = await pool.query(
@@ -143,13 +100,6 @@ router.post("/", async (req, res) => {
 // Update a movie by id
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const movie = req.body;
-  const validationError = validateMovie(movie);
-
-  if (validationError) {
-    return res.status(400).json({ message: validationError });
-  }
-
   const {
     title,
     release_date,
@@ -157,8 +107,7 @@ router.put("/:id", async (req, res) => {
     director_id,
     poster_url,
     description,
-  } = movie;
-
+  } = req.body;
   try {
     const [result] = await pool.query(
       `
